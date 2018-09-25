@@ -1,0 +1,19 @@
+package model;
+
+import java.awt.Graphics;
+import java.awt.geom.AffineTransform;
+
+public class UprightMultiPaintStrategy extends MultiPaintStrategy {
+
+	public UprightMultiPaintStrategy(APaintStrategy[] pstrats) {
+		super(pstrats);
+	}
+	
+	public UprightMultiPaintStrategy(APaintStrategy[] pstrats, AffineTransform at) {
+		super(pstrats, at);
+	}
+	
+//	protected void paintCfg(Graphics g, Ball host) {
+//		
+//	}
+}

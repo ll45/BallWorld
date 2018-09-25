@@ -1,0 +1,57 @@
+/**
+ * This is the model package, that has the model, ball, movement strategies, 
+ * paint strategies, strategy factories, and adapter.
+ */
+package model;
+
+import java.awt.Graphics;
+import java.awt.geom.AffineTransform;
+
+/**
+ * This is the ADecoratePaintStrategy class that is abstract. It has the basic functionality
+ * of a paint strategy, and the methods simply delegate to the decoree.
+ * @author sn32, ll45
+ */
+public abstract class ADecoratorPaintStrategy extends APaintStrategy{
+	/**
+	 * This is a private variable that holds the decoree, an Abstract Paint Strategy.
+	 */
+	private APaintStrategy decoree;
+	
+	/**
+	 * This is the constructor for ADecoratorPaintStrategy, that calls the
+	 * super constructor with an affine transform, and sets the decoree.
+	 * @param decoree An APaintStrategy
+	 */
+	public ADecoratorPaintStrategy(APaintStrategy decoree) {
+		super(new AffineTransform());
+		this.decoree = decoree;
+	}
+	
+	/**
+	 * This init function delegates to the decoree's init function.
+	 */
+	@Override
+	public void init(Ball ball) {
+		decoree.init(ball);
+	}
+	
+	/**
+	 * This function is a secondary paint operation that is the last step of the above
+	 * paint method, which does not calculate its own affine transform, but instead,
+	 * uses a supplied affine transform.
+	 */
+	@Override
+	public void paintXfrm(Graphics g, Ball ball, AffineTransform at) {
+		decoree.paintXfrm(g, ball, at);
+		
+	}
+	
+	/**
+	 * This is paint function that delegates to the decoree's paint method.
+	 */
+	@Override
+	public void paint(Graphics g, Ball ball) {
+		decoree.paint(g, ball);
+	}
+}

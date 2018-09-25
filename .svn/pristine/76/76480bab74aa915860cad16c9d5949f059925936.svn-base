@@ -1,0 +1,8 @@
+package model;
+
+import java.awt.Graphics;
+
+public interface IPaintStrategy {
+	public void paint(Graphics g, Ball ball);
+	public void init(Ball ball);
+}

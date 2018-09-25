@@ -1,0 +1,28 @@
+/**
+ * This is the model package, that has the model, ball, movement strategies, 
+ * paint strategies, strategy factories, and adapter.
+ */
+package model;
+
+import java.awt.Rectangle;
+import java.awt.Shape;
+
+/**
+ * This class defines a factory that makes rectangles.
+ * @author sn32, ll45
+ */
+public class RectangleShapeFactory implements IShapeFactory {
+	/**
+	 * This is a static singleton variable that is used to make new rectangle shape factories.
+	 */
+	public static final RectangleShapeFactory Singleton = new RectangleShapeFactory();
+	
+	/**
+	 * This function makes a rectangle shape.
+	 */
+	@Override
+	public Shape makeShape(double x, double y, double xScale, double yScale) {
+		Shape rec = new Rectangle((int) (x), (int) (y), (int) (xScale), (int) (yScale));
+		return rec;
+	}
+}

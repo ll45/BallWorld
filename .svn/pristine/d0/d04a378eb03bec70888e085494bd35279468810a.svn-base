@@ -1,0 +1,24 @@
+package model;
+
+import java.awt.Graphics;
+import java.awt.geom.AffineTransform;
+
+public class UprightImageStrategy extends ImagePaintStrategy{
+
+	public UprightImageStrategy(String filename, double fillFactor) {
+		super(filename, fillFactor);
+	}
+	
+	public UprightImageStrategy(String filename, double fillFactor, AffineTransform at) {
+		super(filename, fillFactor, at);
+	}
+	
+	protected void paintCfg(Graphics g, Ball host) {
+		  super.paintCfg(g, host);
+		  if(Math.abs(Math.atan2(host.getVel().y, host.getVel().x))> Math.PI/2.0) {
+		    at.scale(1.0, -1.0);
+		  }       
+		}
+
+	
+}

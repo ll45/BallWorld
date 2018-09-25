@@ -1,0 +1,59 @@
+package model;
+
+import java.awt.Container;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.MediaTracker;
+import java.awt.Toolkit;
+import java.awt.geom.AffineTransform;
+
+public class ImagePaintStrategy extends APaintStrategy {
+	double scaleFactor = 1.0;
+	double fillFactor = 1.0;
+	AffineTransform localAT = new AffineTransform();
+	AffineTransform tempAT = new AffineTransform();
+	String filename;
+	private Image image;
+	private Container imageObs;
+	
+	public ImagePaintStrategy(String filename, double fillFactor) {
+		super (new AffineTransform());
+		this.fillFactor = fillFactor;
+		this.filename = filename;
+				
+		try {
+			image =  Toolkit.getDefaultToolkit().getImage(filename);	
+			
+		} catch (Exception e) {
+			System.out.println("failed");
+		}
+	}
+	
+	public ImagePaintStrategy(String filename, double fillFactor, AffineTransform at) {
+		super(at);
+		this.fillFactor = fillFactor;
+		this.filename = filename;
+	}
+	
+	public void init(Ball ball) {
+		imageObs = ball.getCon();
+		MediaTracker mt = new MediaTracker(ball.getCon());
+		mt.addImage(image, 1);
+	try {
+			mt.waitForAll();
+		} catch(Exception e){
+			System.out.println("ImagePaintStrategy.init(): Error waiting for image.  Exception = "+e);
+		}
+		scaleFactor = 2.0/(fillFactor*(image.getWidth(imageObs)+image.getHeight(imageObs))/2.0); // this line is described below
+	}
+
+
+	@Override
+	public void paintXfrm(Graphics g, Ball ball, AffineTransform at) {
+		localAT.setToScale(scaleFactor, scaleFactor);
+		localAT.translate(-image.getWidth(imageObs)/2.0, -image.getHeight(imageObs)/2.0);
+		localAT.preConcatenate(at);
+		((Graphics2D)g).drawImage(image, localAT, imageObs); 
+	}	
+}

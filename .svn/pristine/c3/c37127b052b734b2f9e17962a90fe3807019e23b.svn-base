@@ -1,0 +1,271 @@
+/**
+ * This is the model package, that has the model, ball, movement strategies, strategy
+ * factory, and adapter.
+ */
+package model;
+
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.Rectangle;
+
+import javax.swing.Timer;
+
+import util.Dispatcher;
+import util.Randomizer;
+
+/**
+ * This is the BallWorldModel class, which makes balls, clears balls, and updates the balls.
+ * @author sn32, kyl3, lka2, swong
+ */
+public class BallWorldModel {
+	/**
+	 * This is the adapter which has functions that the model wants the view to do.
+	 */
+	private IModel2ViewAdapter adapter = IModel2ViewAdapter.NULL_OBJECT;
+	
+	/**
+	 * This is how often we want to update.
+	 */
+	private int timeSlice = 50;
+	
+	/**
+	 * This is an instance of a simplified Observable class that immediately notifies its
+	 * Observers when its notifyAll() method is called.
+	 */
+	private Dispatcher dispatcher = new Dispatcher();
+	
+	/**
+	 * This is a timer that says what action to perform every timeSlice number of ms.
+	 */
+	private Timer timer = new Timer(timeSlice, (e) -> adapter.update());
+	
+	/**
+	 * This is the BallWorldModel constructor, which creates a model for the controller to interact with.
+	 * @param adapter An IModel2ViewAdapter.
+	 */
+	public BallWorldModel(IModel2ViewAdapter adapter) {
+		this.adapter = adapter;
+	}
+	
+	/**
+	 * This function clears all the balls from the canvas, by removing them as observers.
+	 */
+	public void clearBalls() {
+		dispatcher.deleteObservers();
+	}
+	
+	/**
+	 * This function starts the timer.
+	 */
+	public void start() {
+		timer.start();
+	}
+
+	/**
+	 * This function updates all the balls by notifying them using the dispatcher.
+	 * @param g The graphics object to paint on.
+	 */
+	public void update(Graphics g) {
+        dispatcher.notifyAll(g);
+    }
+	
+	/**
+	 * This function takes an input string and loads the associated IUpdateStrategy,
+	 * and returns the error strategy if the strategy isn't available.
+	 * @param strat A string of the strategy to be created.
+	 * @return The IUpdateStrategy associated with the string, or the error strategy if
+	 * there is no associated strategy.
+	 */
+	public IUpdateStrategy loadStrategy(String strat) {
+		Object[] args =  new Object[]{};
+		java.lang.reflect.Constructor<?> cons[];
+		try {
+			cons = Class.forName(strat).getConstructors();
+			return (IUpdateStrategy) cons[0].newInstance(args);
+		} catch (Exception e) {
+			return IStrategyFac._errorStrategyFac.make();
+		}
+	}
+	
+	/**
+	 * This function takes the input and confirms it to the required model.ClassStrategy format for
+	 * dynamic class loading.
+	 * @param classname The string that should be modified to conform to the model.ClassStrategy format.
+	 * @return The class string in a model.ClassStrategy format.
+	 */
+	public String fixName(String classname) {
+		return "model." + classname.substring(0, 1).toUpperCase() + classname.substring(1).toLowerCase() + "Strategy";
+	}
+
+	/**
+	 * This takes a class name, and creates a strategy factory for it, by loading the strategy and returning it
+	 * in the make method.
+	 * @param classname The class of strategy to make.
+	 * @return An IStrategyFac whose make function calls the associated model.ClassStrategy.
+	 */
+	public IStrategyFac makeStrategyFac(String classname) {
+		if (null == classname) {
+			return IStrategyFac._errorStrategyFac;
+		}
+	    return new IStrategyFac() {
+	        /**
+	         * Instantiate a strategy corresponding to the given class name.
+	         * @return An IUpdateStrategy instance
+	         */
+	        public IUpdateStrategy make() {
+	        		return loadStrategy(fixName(classname));
+	        }
+
+	        /**
+	         * Return the given class name string
+	         */
+	        public String toString() {
+	            return classname;
+	        }
+
+			@Override
+			public IPaintStrategy makePaint() {
+				return new BallPaintStrategy();
+			}
+	    };
+	}
+
+	/**
+	 * This function randomizes parameters for the ball, and makes a ball with the parameter's update strategy.
+	 * @param make The IUpdateStrategy that determines how the ball updates.
+	 */
+	public void makeBall(IUpdateStrategy make, IPaintStrategy paintStrat) {
+		Container con = adapter.getCanvas();
+		Randomizer rzr = Randomizer.Singleton;
+		
+		int startRad = rzr.randomInt(10, 45);
+		Point randLoc = rzr.randomLoc(new Rectangle(con.getWidth() - startRad, con.getHeight() - startRad));
+		Point startLoc = new Point(randLoc.x + startRad, randLoc.y + startRad);
+		Point startVel = new Point(0, 0);
+
+		// Handles case where both x- and y-components of velocity are 0 to prevent ball from starting stationary.
+		while (startVel.x == 0 && startVel.y == 0) {
+			startVel = new Point(rzr.randomInt(-20, 20), rzr.randomInt(-20, 20));
+		}
+		Color startCol = rzr.randomColor();
+		
+//		IPaintStrategy sq = new SquarePaintStrategy();
+//		IPaintStrategy sq = new ShapePaintStrategy(new AffineTransform(), new Rectangle(10, 10, 10, 10));
+		Ball loaded = new Ball(startCol, startLoc, startRad, startVel, con, make, paintStrat);
+		dispatcher.addObserver(loaded);
+	}
+
+	/**
+	 * Returns an IStrategyFac that can instantiate a MultiStrategy with the two
+	 * strategies made by the two given IStrategyFac objects. Returns null if
+	 * either supplied factory is null. The toString() of the returned factory
+	 * is the toString()'s of the two given factories, concatenated with "-". 
+	 * If either factory is null, then a factory for a beeping error strategy is returned.
+	 * 
+	 * @param stratFac1 An IStrategyFac for a strategy
+	 * @param stratFac2 An IStrategyFac for a strategy
+	 * @return An IStrategyFac for the composition of the two strategies
+	 */
+	public IStrategyFac combineStrategyFacs(final IStrategyFac stratFac1, final IStrategyFac stratFac2) {
+	    if (null == stratFac1 || null == stratFac2) {
+	    		return IStrategyFac._errorStrategyFac;
+	    	}
+	    
+	    return new IStrategyFac() {
+	        /**
+	         * Instantiate a new MultiStrategy with the strategies from the given strategy factories
+	         * @return A MultiStrategy instance
+	         */
+	        public IUpdateStrategy make() {
+	            return new MultiStrategy(stratFac1.make(), stratFac2.make());
+	        }
+
+	        /**
+	         * Return a string that is the toString()'s of the given strategy factories concatenated with a "-"
+	         */
+	        public String toString() {
+	            return stratFac1.toString() + "-" + stratFac2.toString();
+	        }
+
+			@Override
+			public IPaintStrategy makePaint() {
+				return new BallPaintStrategy();
+			}
+	    };
+	}
+
+	/**
+	 * This function sets the switcher balls strategy to the one made by the input.
+	 * @param switchFac IStrategyFac which makes the new update strategy for the switcher balls.
+	 */
+	public void setSwitcherStrategy(IStrategyFac switchFac) {
+		SwitcherStrategy.setStrat(switchFac.make());
+	}
+
+	/**
+	 * This function returns a strategy factory, which makes the current switcher balls' update
+	 * strategy
+	 * @return An IStrategyFac, which makes the current strategy for the switcher balls.
+	 */
+	public IStrategyFac getSwitcherFac() {
+		return IStrategyFac.switcherStrat;
+	}
+
+	public IStrategyFac makePaintFactory(String text) {
+		return new IStrategyFac() {
+	        public IUpdateStrategy make() {
+	        		return new StraightStrategy();
+	        }
+ 
+	        public String toString() {
+	            return text;
+	        }
+
+			@Override
+			public IPaintStrategy makePaint() {
+				return loadPaintStrat(fixPaintName(text));
+			}
+	    };
+	}
+	
+	public IPaintStrategy loadPaintStrat(String strat) {
+		// DELET THIS LATER BUT NOW NOW
+		strat = "MarsImage";
+		
+		if (strat.endsWith("Image")) {
+//			String filename = strat.substring(0, strat.indexOf("Image"));
+			String filename = "images/Mars.png";
+			Object[] args =  new Object[]{filename, 0.33};
+			java.lang.reflect.Constructor<?> cons[];
+			try {
+				cons = Class.forName("model.ImagePaintStrategy").getConstructors();
+				if (cons[0].getParameterCount() == 2) {
+					return (IPaintStrategy) cons[0].newInstance(args);
+				} else {
+					return (IPaintStrategy) cons[1].newInstance(args);
+				}
+				
+			} catch (Exception e) {
+				System.out.println(e);
+				System.out.println("making the error");
+				return IStrategyFac._errorStrategyFac.makePaint();
+			}
+		} else {
+			Object[] args =  new Object[]{};
+			java.lang.reflect.Constructor<?> cons[];
+			try {
+				cons = Class.forName(strat).getConstructors();
+				return (IPaintStrategy) cons[0].newInstance(args);
+			} catch (Exception e) {
+				return IStrategyFac._errorStrategyFac.makePaint();
+			}
+		}
+	}
+	
+	public String fixPaintName(String classname) {
+		return "model." + classname.substring(0, 1).toUpperCase() + classname.substring(1).toLowerCase() + "PaintStrategy";
+	}
+
+}

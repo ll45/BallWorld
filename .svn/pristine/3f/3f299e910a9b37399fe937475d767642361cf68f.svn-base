@@ -1,0 +1,35 @@
+/**
+ * This is the model package, that has the model, ball, movement strategies, strategy
+ * factory, and adapter.
+ */
+package model;
+
+import java.awt.Point;
+
+/**
+ * This class defines a Fast Strategy that makes the ball's velocity increase and stop once it reaches
+ * a pre defined max speed.
+ * @author sn32, lka2
+ */
+public class FastStrategy implements IUpdateStrategy {
+	/**
+	 * This function updates the state of the ball by changing its velocity, and making
+	 * it stop once it reaches a maximum.
+	 */
+	@Override
+	public void updateState(Ball ball) {
+		if (Math.abs(ball.getVel().x) < 100 && Math.abs(ball.getVel().y) < 100) {
+			if (ball.getItr() % 10 == 0) {
+				if (ball.getVel().x > 0 && ball.getVel().y > 0) {
+					ball.setVel(new Point(ball.getVel().x + 2, ball.getVel().y + 2));
+				} else if (ball.getVel().x > 0 && ball.getVel().y < 0) {
+					ball.setVel(new Point(ball.getVel().x + 2, ball.getVel().y - 2));
+				} else if (ball.getVel().x < 0 && ball.getVel().y > 0) {
+					ball.setVel(new Point(ball.getVel().x - 2, ball.getVel().y + 2));
+				} else if (ball.getVel().x < 0 && ball.getVel().y < 0) {
+					ball.setVel(new Point(ball.getVel().x - 2, ball.getVel().y - 2));
+				}
+			}
+		}
+	}
+}

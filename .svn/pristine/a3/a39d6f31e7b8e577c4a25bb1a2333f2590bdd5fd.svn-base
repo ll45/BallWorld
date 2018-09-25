@@ -1,0 +1,12 @@
+package model;
+
+import java.awt.Point;
+import java.awt.geom.AffineTransform;
+
+public class Fish2PolygonFactory extends PolygonFactory {
+
+	public Fish2PolygonFactory(AffineTransform at, double scaleFactor, Point[] pts) {
+		super(at, scaleFactor, pts);
+	}
+
+}

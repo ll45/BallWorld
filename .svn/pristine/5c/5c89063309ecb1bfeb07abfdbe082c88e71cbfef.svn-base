@@ -1,0 +1,30 @@
+package model;
+
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+
+public class ShapePaintStrategy extends APaintStrategy implements IShapeFactory {
+	Shape shape;
+	
+	public ShapePaintStrategy(Shape shape) {
+		this.shape = shape;
+	}
+	
+	public ShapePaintStrategy(AffineTransform at, Shape shape) {
+		super(at);
+		this.shape = shape;
+	}
+	
+	public void paintXfrm(Graphics g, Ball host, AffineTransform at){ 
+		((Graphics2D) g).fill(at.createTransformedShape(shape));
+	}
+
+	@Override
+	public Shape makeShape(double x, double y, double xScale, double yScale) {
+		at.setToTranslation(x, y);
+		at.scale(x * xScale, y * yScale);  // optional rotation can be added as well
+		return at.createTransformedShape(shape);
+	} // is this even correct lmao I really have no idea what's going on anymore
+}

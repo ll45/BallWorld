@@ -1,0 +1,32 @@
+/**
+ * This is the model package, that has the model, ball, movement strategies, 
+ * paint strategies, strategy factories, and adapter.
+ */
+package model;
+
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+
+/**
+ * This class defines an upright shape paint strategy.
+ * @author sn32, ll45
+ *
+ */
+public class UprightShapePaintStrategy extends ShapePaintStrategy {
+	/**
+	 * This calls the superclass constructor without an Affine Transform.
+	 * @param shape A shape
+	 */
+	public UprightShapePaintStrategy(Shape shape) {
+		super(shape);
+	}
+	
+	/**
+	 * This calls the superclass constructor with an Affine Transform
+	 * @param at An Affine Transform
+	 * @param shape A shape.
+	 */
+	public UprightShapePaintStrategy(AffineTransform at, Shape shape) {
+		super(at, shape);
+	}
+}

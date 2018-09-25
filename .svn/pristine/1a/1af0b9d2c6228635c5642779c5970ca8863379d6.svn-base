@@ -1,0 +1,27 @@
+package model;
+
+import java.awt.Graphics;
+import java.awt.geom.AffineTransform;
+
+public class AnimatePaintStrategy extends APaintStrategy {
+	APaintStrategy[] pstrats;
+	AffineTransform at;
+	
+	private int tickCount = 0, strategyCount = 0, ticksPerStrategy = 1;
+
+	@Override
+	public void paintXfrm(Graphics g, Ball host, AffineTransform at) {
+	}
+	
+	public AnimatePaintStrategy(int ticksPerStrategy, APaintStrategy[] pstrats) {
+		this.pstrats = pstrats;
+		this.ticksPerStrategy = ticksPerStrategy;
+	}
+	
+	public AnimatePaintStrategy(AffineTransform at, int ticksPerStrategy, APaintStrategy[] pstrats) {
+		this.pstrats = pstrats;
+		this.at = at;
+		this.ticksPerStrategy = ticksPerStrategy;
+	}
+
+}

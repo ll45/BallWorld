@@ -1,0 +1,72 @@
+package model;
+
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.MediaTracker;
+import java.awt.Toolkit;
+import java.awt.geom.AffineTransform;
+import java.awt.image.ImageObserver;
+
+public class ImagePaintStrategy extends APaintStrategy {
+	double scaleFactor = 1.0;
+	double fillFactor = 1.0;
+	AffineTransform localAT = new AffineTransform();
+	AffineTransform tempAT = new AffineTransform();
+	String filename;
+	private Image image = Toolkit.getDefaultToolkit().getImage("../../images/Mars.png");
+	private ImageObserver imageObs;
+	
+	public ImagePaintStrategy(String filename, double fillFactor) {
+		super (new AffineTransform());
+		this.fillFactor = fillFactor;
+		this.filename = filename;
+		System.out.println(filename);
+		
+		filename = "../../images/Mars.png";
+		try {
+			image = Toolkit.getDefaultToolkit().getImage(filename);
+			System.out.println("got the file!");
+		} catch (Exception e) {
+			System.out.println("Unable to get file");
+		}
+	}
+	
+	public void init(Ball host) {
+		imageObs = host.getCon();
+		MediaTracker mt = new MediaTracker(host.getCon());
+		mt.addImage(image, 1);
+		try {
+			mt.waitForAll();
+		} catch(Exception e){
+			System.out.println("ImagePaintStrategy.init(): Error waiting for image.  Exception = "+e);
+		}
+		
+		if (image == null) {
+			System.out.println("image null");
+		}
+		
+		if (imageObs == null) {
+			System.out.println("image observer is null");
+		}
+		
+		scaleFactor = 2.0/(fillFactor*(image.getWidth(imageObs)+image.getHeight(imageObs))/2.0);
+		
+		System.out.println("finished initting");
+	}
+	
+	public ImagePaintStrategy(String filename, double fillFactor, AffineTransform at) {
+		super(at);
+		this.fillFactor = fillFactor;
+		this.filename = filename;
+	}
+
+	@Override
+	public void paintXfrm(Graphics g, Ball host, AffineTransform at) {
+		int ballX = host.getLoc().x;
+		int ballY = host.getLoc().y;
+		((Graphics2D) g).fillRect(ballX, ballY, 50, 50);
+		((Graphics2D) g).drawImage(image, ballX, ballY, 100, 100, host.getCon());
+		// why isn't this working someone please help
+	}	
+}

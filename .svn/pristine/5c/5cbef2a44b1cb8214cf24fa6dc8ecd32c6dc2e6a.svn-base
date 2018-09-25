@@ -1,0 +1,18 @@
+package model;
+
+import java.awt.Shape;
+import java.awt.geom.Ellipse2D;
+
+public class EllipseShapeFactory implements IShapeFactory {
+	
+	public static final EllipseShapeFactory Singleton = new EllipseShapeFactory();
+
+	public EllipseShapeFactory() {
+	}
+
+	@Override
+	public Shape makeShape(double x, double y, double xScale, double yScale) {
+		Shape ellipse = new Ellipse2D.Double(x, y, xScale, yScale);
+		return ellipse;
+	}
+}

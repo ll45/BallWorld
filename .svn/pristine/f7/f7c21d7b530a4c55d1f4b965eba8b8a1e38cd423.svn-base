@@ -1,0 +1,39 @@
+/**
+ * This is the model package, that has the model, ball, movement strategies, strategy
+ * factory, and adapter.
+ */
+package model;
+
+/**
+ * This class defines a Multi Strategy which defines a movement strategy for a ball
+ * is a combination of 2 other strategies.
+ * @author sn32, lka2
+ */
+public class MultiStrategy implements IUpdateStrategy {
+	/**
+	 * These private variables define the 2 update strategies that compose
+	 * the Multi Strategy.
+	 */
+	private IUpdateStrategy s1, s2;
+	
+	/**
+	 * This constructor requires the 2 strategies that will be combined. It sets
+	 * the 2 private variables to the inputs.
+	 * @param s1 The first strategy, an IUpdateStrategy.
+	 * @param s2 The second strategy, an IUpdateStrategy.
+	 */
+	public MultiStrategy(IUpdateStrategy s1, IUpdateStrategy s2) {
+		this.s1 = s1;
+		this.s2 = s2;
+	}
+
+	/**
+	 * This function updates the state of the ball by delegating to each strategy and telling
+	 * them to update the ball.
+	 */
+	@Override
+	public void updateState(Ball ball) {
+		s1.updateState(ball);
+		s2.updateState(ball);
+	}
+}

@@ -1,0 +1,56 @@
+package model;
+
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.MediaTracker;
+import java.awt.Toolkit;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
+import java.io.File;
+
+import javax.imageio.ImageIO;
+
+public class ImagePaintStrategy extends APaintStrategy {
+	double scaleFactor = 1.0;
+	double fillFactor = 1.0;
+	AffineTransform localAT = new AffineTransform();
+	AffineTransform tempAT = new AffineTransform();
+	String filename;
+	private Image img; 
+	
+	public ImagePaintStrategy(String filename, double fillFactor) {
+		super (new AffineTransform());
+		this.fillFactor = fillFactor;
+		this.filename = filename;
+		
+		try {
+			this.img = ImageIO.read(new File("images/Mars.jpg"));
+			
+		} catch (Exception e) {
+			System.out.println("failed");
+		}
+	}
+	
+	public void init(Ball host) {
+//		imageObs = host.getCon();
+//		MediaTracker mt = new MediaTracker(host.getCon());
+//		mt.addImage(image, 1);
+//		try {
+//			mt.waitForAll();
+//		} catch(Exception e){
+//			System.out.println("ImagePaintStrategy.init(): Error waiting for image.  Exception = "+e);
+//		}
+//		scaleFactor = 2.0/(fillFactor*(image.getWidth(imageObs)+image.getHeight(imageObs))/2.0); // this line is described below
+	}
+	
+	public ImagePaintStrategy(String filename, double fillFactor, AffineTransform at) {
+		super(at);
+		this.fillFactor = fillFactor;
+		this.filename = filename;
+	}
+
+	@Override
+	public void paintXfrm(Graphics g, Ball host, AffineTransform at) {
+	}	
+}

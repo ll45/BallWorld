@@ -1,0 +1,20 @@
+package model;
+
+import java.awt.Graphics;
+
+public class BallPaintStrategy implements IPaintStrategy {
+	
+	public BallPaintStrategy() {
+	}
+
+	@Override
+	public void paint(Graphics g, Ball ball) {
+		g.setColor(ball.getCol());
+		g.fillOval(ball.getLoc().x - ball.getRad(), ball.getLoc().y - ball.getRad(),
+				ball.getRad() * 2, ball.getRad() * 2);
+	}
+
+	@Override
+	public void init(Ball ball) {
+	}
+}

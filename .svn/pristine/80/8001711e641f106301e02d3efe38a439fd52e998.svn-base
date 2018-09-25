@@ -1,0 +1,27 @@
+package model;
+
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+
+public class ShapePaintStrategy implements IShapeFactory {
+	Shape shape;
+	
+	public ShapePaintStrategy(Shape shape) {
+		this.shape = shape;
+	}
+	
+	public ShapePaintStrategy(AffineTransform at, Shape shape) {
+		this.shape = shape;
+	}
+	
+	public void paintXfrm(Graphics g, Ball host, AffineTransform at){ 
+		((Graphics2D) g).fill(at.createTransformedShape(shape));
+	  }
+
+	@Override
+	public Shape makeShape(double x, double y, double xScale, double yScale) {
+		return null;
+	}
+}

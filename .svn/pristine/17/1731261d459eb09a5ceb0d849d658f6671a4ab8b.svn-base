@@ -1,0 +1,60 @@
+/**
+ * This is the model package, that has the model, ball, movement strategies, strategy
+ * factory, and adapter.
+ */
+package model;
+
+/**
+ * This interface defines the functions we want IStrategyFac to have.
+ * @author sn32, lka2
+ */
+public interface IStrategyFac {
+	/**
+	 * This function allows IStrategyFac to make an IUpdateStrategy.
+	 * @return An IUpdateStrategy
+	 */
+	public IUpdateStrategy make();
+	
+	/**
+     * A factory for a beeping error strategy that beeps the speaker every 25 updates.
+     * Either use the _errorStrategyFac variable directly if you need a factory that
+     * makes an error strategy, or call _errorStrategyFac.make() to create an instance
+     * of a beeping error strategy.
+     */
+	IStrategyFac _errorStrategyFac = new IStrategyFac(){
+        /**
+         * Make the beeping error strategy
+         * @return  An instance of a beeping error strategy
+         */
+		@Override
+		public IUpdateStrategy make() {
+            return new IUpdateStrategy() {
+                private int count = 0; // update counter
+                
+                /**
+                 * Beep the speaker every 25 updates
+                 */
+                @Override
+                public void updateState(Ball context) {
+                    if(25 < count++){
+                        java.awt.Toolkit.getDefaultToolkit().beep(); 
+                        count = 0;
+                    }
+                }
+            };
+        }
+    };
+    
+    /**
+     * This factory creates a new Switcher Strategy.
+     */
+    IStrategyFac switcherStrat = new IStrategyFac() {
+    		/**
+    		 * This function makes the switcher strategy.
+    		 */
+		@Override
+		public IUpdateStrategy make() {
+			return new SwitcherStrategy();
+		}
+	};
+}

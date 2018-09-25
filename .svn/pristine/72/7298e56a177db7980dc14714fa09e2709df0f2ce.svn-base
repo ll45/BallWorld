@@ -1,0 +1,30 @@
+/**
+ * This is the model package, that has the model, ball, movement strategies, 
+ * paint strategies, strategy factories, and adapter.
+ */
+package model;
+
+import java.awt.geom.AffineTransform;
+
+/**
+ * This class defines a CompositePaintStrategy, which is a concrete class of MultiPaintStrategy.
+ * @author sn32, ll45
+ */
+public class CompositePaintStrategy extends MultiPaintStrategy {
+	/**
+	 * This is a constructor that calls its super constructor.
+	 * @param pstrats An array of APaintStrategies.
+	 */
+	public CompositePaintStrategy(APaintStrategy[] pstrats) {
+		super(pstrats);
+	}
+
+	/**
+	 * This is a constructor that calls its super constructor.
+	 * @param at An Affine Transform
+	 * @param pstrats An array of APaintStrategies.
+	 */
+	public CompositePaintStrategy(AffineTransform at, APaintStrategy[] pstrats) {
+		super(at, pstrats);
+	}
+}

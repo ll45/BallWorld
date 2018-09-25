@@ -1,0 +1,36 @@
+HW04
+====
+Shrinithi Narayanan; Lusia Lu
+
+This is HW04 for COMP310, where we implement various painting strategies for our BallWorld,
+and add command dispatching.
+
+This project has added functionality to what we had for HW03. Now, we also have paint strategies,
+that work with the update strategies we have (unless something deals with the color, since we
+currently do not support dynamically changing the color of an image).
+
+The paint strategies we support, as required by the rubric are...
+
+Non-affine transform-based paint strategy, i.e. directly implements IPaintStrategy:
+	1) This is BallPaintStrategy, which is just typed in the GUI as 'Ball' without the quotes.
+	2) This is SquarePaintStrategy, which is just typed in the GUI as 'Square' without the quotes.
+Affine transform-based paint strategy:
+	Simple geometric shape and/or polygon:
+		3) This is EllipsePaintStrategy, which is just typed in the GUI as 'Ellipse' without the quotes.
+		4) This is RectanglePaintStrategy, which is just typed in the GUI as 'Rectangle' without the quotes.
+	Composite shape that stays upright:
+		5) This is UprightCompositeStrategy, which is just typed in the GUI as 'Composite' without the quotes.
+	Image:
+		6) This is ImagePaintStrategy, which is just typed in the GUI as the image you want to draw starting
+		with a capital character, following by 'Image' without the quotes. The currently supported images are
+			-EarthImage
+			-HumbirdImage
+			-JupiterImage
+			-MarioImage
+			-MarsImage
+			-ReefImage
+			-SaturnImage
+			-SheepImage
+			-SoccerImage
+			-SonicImage
+			-VenusImage

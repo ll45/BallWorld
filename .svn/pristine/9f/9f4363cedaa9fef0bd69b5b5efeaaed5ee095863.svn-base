@@ -1,0 +1,43 @@
+/**
+ * This is the model package, that has the model, ball, movement strategies, 
+ * paint strategies, strategy factories, and adapter.
+ */
+package model;
+
+import util.Dispatcher;
+import util.Randomizer;
+
+/**
+ * This class defines a Swell Strategy which defines a movement strategy for a ball that grows it
+ * in size, and once it reaches a certain size, it changes colors, and then shrinks slowly and repeats.
+ * @author sn32, lka2
+ */
+public class SwellStrategy implements IUpdateStrategy {
+	/**
+	 * This function changes the state of the ball by applying the increase in size and color change,
+	 * and making it slowly shrink, and repeats the process.
+	 */
+	@Override
+	public void updateState(Ball ball, Dispatcher dispatcher) {
+		dispatcher.notifyAll(new IBallCmd() {
+			/**
+			 * This function applies the changes to the correct ball.
+			 */
+			@Override
+			public void apply(Ball other, Dispatcher disp) {
+				if (ball.equals(other)) {
+					Randomizer rzr = Randomizer.Singleton;
+					ball.setRad(ball.getRad() + ball.getRadDelta());
+					if (ball.getRad() >= 80) {
+						ball.setRadDelta(1);
+						ball.setRadDelta(ball.getRadDelta() * -1);
+						ball.setCol(rzr.randomColor());
+					} else if (ball.getRad() <= 20) {
+						ball.setRadDelta(-5);
+						ball.setRadDelta(ball.getRadDelta() * -1);
+					}
+				}
+			}
+		});
+	}
+}

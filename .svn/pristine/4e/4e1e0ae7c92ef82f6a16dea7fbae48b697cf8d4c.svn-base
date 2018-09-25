@@ -1,0 +1,27 @@
+/**
+ * This is the model package, that has the model, ball, movement strategies, strategy
+ * factory, and adapter.
+ */
+package model;
+
+import java.awt.Color;
+
+import util.Randomizer;
+
+/**
+ * This class defines a Color Strategy, which changes the ball's color.
+ * @author sn32, lka2
+ */
+public class ColorStrategy implements IUpdateStrategy {
+	/**
+	 * This function updates the state of the ball by changing its color
+	 * to a random color.
+	 */
+	@Override
+	public void updateState(Ball ball) {
+		if (ball.getItr() % 10 == 0) {
+			Color newColor = Randomizer.Singleton.randomColor();
+			ball.setCol(newColor);
+		}
+	}
+}

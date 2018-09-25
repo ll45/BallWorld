@@ -1,0 +1,15 @@
+package model;
+
+import java.awt.geom.AffineTransform;
+
+public class Fish2PaintStrategy {
+	AffineTransform at;
+	
+	public Fish2PaintStrategy(AffineTransform at) {
+		this.at = at;
+	}
+	
+	public Fish2PaintStrategy() {
+		
+	}
+}

@@ -1,0 +1,42 @@
+/**
+ * This is the model package, that has the model, ball, movement strategies, 
+ * paint strategies, strategy factories, and adapter.
+ */
+package model;
+
+import java.awt.Graphics;
+import java.awt.geom.AffineTransform;
+
+/**
+ * This classd defines an upright composite paint strategy.
+ * @author sn32, ll45
+ *
+ */
+public class UprightCompositePaintStrategy extends CompositePaintStrategy {
+	/**
+	 * This constructor doesn't take in an Affine Transform.
+	 * @param pstrats An array of APaintStrategies
+	 */
+	public UprightCompositePaintStrategy(APaintStrategy[] pstrats) {
+		super(pstrats);
+	}
+	
+	/**
+	 * This constructo does take in an Affine Transform
+	 * @param pstrats an array of APaintStrategies
+	 * @param at An Affine Transform
+	 */
+	public UprightCompositePaintStrategy(APaintStrategy[] pstrats, AffineTransform at) {
+		super(at, pstrats);
+	}
+	
+	/**
+	 * This allows additional processing when painting.
+	 */
+	protected void paintCfg(Graphics g, Ball host) {
+		super.paintCfg(g, host);
+		if(Math.abs(Math.atan2(host.getVel().y, host.getVel().x))> Math.PI/2.0) {
+			at.scale(1.0, -1.0);
+		}        
+	}
+}

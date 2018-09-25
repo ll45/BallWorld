@@ -1,0 +1,25 @@
+package model;
+
+import java.awt.Graphics;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+
+public class MultiPaintStrategy extends APaintStrategy {
+	private APaintStrategy[] pstrats;
+
+	public MultiPaintStrategy(APaintStrategy[] pstrats) {
+		super(new AffineTransform());
+		this.pstrats = pstrats;
+	}
+	
+	
+	public MultiPaintStrategy(AffineTransform at, APaintStrategy[] pstrats) {
+		super(at);
+		this.pstrats = pstrats;
+	}
+	
+	@Override
+	public void paintXfrm(Graphics g, Ball host, AffineTransform at) {
+		
+	}
+}

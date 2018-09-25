@@ -1,0 +1,43 @@
+/**
+ * This is the model package, that has the model, ball, movement strategies, 
+ * paint strategies, strategy factories, and adapter.
+ */
+package model;
+
+import java.awt.Graphics;
+import java.awt.geom.AffineTransform;
+
+/**
+ * This class defines an upright image.
+ * @author sn32, ll45
+ */
+public class UprightImagePaintStrategy extends ImagePaintStrategy{
+	/**
+	 * This constructor calls the superclass without an affine transform.
+	 * @param filename The file to be loaded
+	 * @param fillFactor The fill factor
+	 */
+	public UprightImagePaintStrategy(String filename, double fillFactor) {
+		super(filename, fillFactor);
+	}
+	
+	/**
+	 * This constructor calls the superclass with an affine transform.
+	 * @param filename A string for the file to be loaded
+	 * @param fillFactor A double for fill factor
+	 * @param at An Affine Transform
+	 */
+	public UprightImagePaintStrategy(String filename, double fillFactor, AffineTransform at) {
+		super(filename, fillFactor, at);
+	}
+	
+	/**
+	 * This allows extra processing during painting.
+	 */
+	protected void paintCfg(Graphics g, Ball host) {
+		super.paintCfg(g, host);
+		if(Math.abs(Math.atan2(host.getVel().y, host.getVel().x))> Math.PI/2.0) {
+			at.scale(1.0, -1.0);
+		}       
+	}
+}
